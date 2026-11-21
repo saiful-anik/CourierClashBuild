@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#111b23" />
+    <title>Courier Clash</title>
+    <link rel="icon" href="TemplateData/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="TemplateData/icons/icon-192.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="preload" as="image" href="TemplateData/asd.webp" />
+    <link rel="stylesheet" href="TemplateData/style.css" />
+  </head>
+  <body>
+    <main id="game">
+      <canvas
+        id="unity-canvas"
+        width="960"
+        height="600"
+        aria-label="Courier Clash game"
+        tabindex="-1"
+      ></canvas>
+      <div id="loading" class="splash">
+        <img
+          class="game-logo"
+          src="TemplateData/courier-clash-logo.png"
+          alt="Courier Clash"
+          width="760"
+          height="541"
+        />
+        <progress
+          id="progress"
+          value="0"
+          max="1"
+          aria-label="Loading Courier Clash"
+        ></progress>
+      </div>
+      <div id="unity-warning" role="status"></div>
+    </main>
+    <section id="rotate" class="splash" aria-labelledby="rotate-title">
+      <img
+        class="game-logo"
+        src="TemplateData/courier-clash-logo.png"
+        alt="Courier Clash"
+        width="760"
+        height="541"
+      />
+      <span class="rotate-icon" aria-hidden="true">↻</span>
+      <h1 id="rotate-title">Rotate your device</h1>
+      <p>Play in landscape for the best experience.</p>
+    </section>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("ServiceWorker.js")
+            .catch((error) => {
+              console.warn(
+                "Could not register the Courier Clash service worker.",
+                error,
+              );
+            });
+        });
+      }
+
+      const game = document.querySelector("#game");
+      const canvas = document.querySelector("#unity-canvas");
+      const loading = document.querySelector("#loading");
+      const progressBar = document.querySelector("#progress");
+      const warningBanner = document.querySelector("#unity-warning");
+      const portrait = window.matchMedia("(orientation: portrait)");
+      let started = false;
+
+      function showBanner(message, type) {
+        const banner = document.createElement("div");
+        banner.textContent = message;
+        banner.className = type === "error" ? "error" : "warning";
+        warningBanner.append(banner);
+        if (type !== "error") {
+          setTimeout(() => banner.remove(), 5000);
+        }
+      }
+
+      function showLoadingError(message) {
+        progressBar.hidden = true;
+        showBanner(message, "error");
+      }
+
+      function syncOrientation() {
+        game.inert = portrait.matches;
+        if (portrait.matches || started) return;
+        started = true;
+
+        const buildUrl = "Build/";
+        const config = {
+          arguments: [],
+          dataUrl: buildUrl + "CourierClash-PWA.data",
+          frameworkUrl: buildUrl + "CourierClash-PWA.framework.js",
+          codeUrl: buildUrl + "CourierClash-PWA.wasm",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "DefaultCompany",
+          productName: "CourierClash",
+          productVersion: "0.1.0",
+          showBanner,
+        };
+
+        const script = document.createElement("script");
+        script.src = buildUrl + "CourierClash-PWA.loader.js";
+        script.onerror = () =>
+          showLoadingError(
+            "Courier Clash couldn’t load. Reload the page to try again.",
+          );
+        script.onload = async () => {
+          try {
+            const instance = await createUnityInstance(
+              canvas,
+              config,
+              (progress) => {
+                progressBar.value = progress;
+              },
+            );
+            loading.hidden = true;
+          } catch (error) {
+            console.error(error);
+            showLoadingError(
+              "Courier Clash couldn’t start. Reload the page to try again.",
+            );
+          }
+        };
+        document.body.append(script);
+      }
+
+      portrait.addEventListener("change", syncOrientation);
+      syncOrientation();
+    </script>
+  </body>
+</html>
