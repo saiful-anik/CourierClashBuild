@@ -1,5 +1,5 @@
 const cachePrefix = "courier-clash:" + self.registration.scope + ":";
-const cacheName = cachePrefix + "mwqccbtj";
+const cacheName = cachePrefix + "mws7xg1v";
 const indexUrl = new URL("index.html", self.registration.scope).href;
 const assets = new Set([
   "index.html",
@@ -10,10 +10,10 @@ const assets = new Set([
   "TemplateData/icons/icon-192.png",
   "TemplateData/icons/icon-512.png",
   "TemplateData/icons/maskable-512.png",
-  "Build/" + "CourierClash-PWA.loader.js",
-  "Build/" + "CourierClash-PWA.data",
-  "Build/" + "CourierClash-PWA.framework.js",
-  "Build/" + "CourierClash-PWA.wasm",
+  "Build/" + "Builds.loader.js",
+  "Build/" + "Builds.data",
+  "Build/" + "Builds.framework.js",
+  "Build/" + "Builds.wasm",
 ].map((path) => new URL(path, self.registration.scope).href));
 
 self.addEventListener("install", (event) => {
