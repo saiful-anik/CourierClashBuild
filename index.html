@@ -64,11 +64,12 @@
       started = true;
 
       const buildUrl = "Build/";
+      const lfsBuildUrl = "https://media.githubusercontent.com/media/saiful-anik/CrourierClashBuild/main/Build/";
       const config = {
         arguments: [],
-        dataUrl: buildUrl + "Builds.data",
+        dataUrl: lfsBuildUrl + "Builds.data",
         frameworkUrl: buildUrl + "Builds.framework.js",
-        codeUrl: buildUrl + "Builds.wasm",
+        codeUrl: lfsBuildUrl + "Builds.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "CourierClash",
