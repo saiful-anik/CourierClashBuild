@@ -65,6 +65,21 @@
 
       const buildUrl = "Build/";
       const lfsBuildUrl = "https://media.githubusercontent.com/media/saiful-anik/CrourierClashBuild/main/Build/";
+      const instantiateStreaming = WebAssembly.instantiateStreaming.bind(WebAssembly);
+      WebAssembly.instantiateStreaming = async (response, imports) => {
+        const wasmResponse = await response;
+        if (wasmResponse.url.endsWith("/Builds.wasm")
+          && wasmResponse.headers.get("Content-Type") !== "application/wasm") {
+          const headers = new Headers(wasmResponse.headers);
+          headers.set("Content-Type", "application/wasm");
+          return instantiateStreaming(new Response(wasmResponse.body, {
+            status: wasmResponse.status,
+            statusText: wasmResponse.statusText,
+            headers,
+          }), imports);
+        }
+        return instantiateStreaming(wasmResponse, imports);
+      };
       const config = {
         arguments: [],
         dataUrl: lfsBuildUrl + "Builds.data",

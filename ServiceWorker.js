@@ -1,5 +1,5 @@
 const cachePrefix = "courier-clash:" + self.registration.scope + ":";
-const cacheName = cachePrefix + "mws7xg2a";
+const cacheName = cachePrefix + "mws7xg2b";
 const indexUrl = new URL("index.html", self.registration.scope).href;
 const assets = new Set([
   "index.html",
